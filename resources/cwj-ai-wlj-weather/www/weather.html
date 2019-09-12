@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.css" rel="stylesheet" />
+		<script src="js/mui.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function() {
+				var citys = plus.webview.currentWebview();
+				document.getElementById('title').innerHTML = citys.cityname;
+				mui.ajax('http://apis.juhe.cn/simpleWeather/query?city=' + citys.cityname +
+					'&key=180e15f0989cb09f196b8979fc794195', {
+						data: {
+
+						},
+						dataType: 'json', //服务器返回json格式数据
+						type: 'post', //HTTP请求类型
+						timeout: 10000, //超时时间设置为10秒；
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						success: function(data) {
+							if (data.error_code == 207301) {
+								mui.alert('输入的城市名错误');
+							} else {
+								document.getElementById('city').innerHTML = data.result.city;
+								document.getElementById('temperature').innerHTML = data.result.realtime.temperature;
+								document.getElementById('weather').innerHTML = data.result.realtime.info;
+								document.getElementById('humidity').innerHTML = data.result.realtime.humidity;
+								document.getElementById('direct').innerHTML = data.result.realtime.direct;
+								document.getElementById('power').innerHTML = data.result.realtime.power;
+								var table = document.body.querySelector('tbody');
+								for (var i = 1; i < data.result.future.length; i++) {
+									var tr = document.createElement('tr');
+									tr.innerHTML = "<td>" + data.result.future[i].date + "</td><td>" + data.result.future[i].weather+"-"+ data.result.future[i].temperature+ "</td>";
+									table.appendChild(tr);
+								}
+							}
+						}
+					});
+			})
+		</script>
+		<style>
+			#title2{
+				margin-top: 1.25rem;
+				margin-left: 0.625rem;
+			}
+			.table{
+				margin-top: 20px;
+			}
+            .table th {
+                background-repeat: repeat-x;
+                height: 30px;
+            }
+ 
+            .table td,
+            .table th {
+                padding: 0 1.5em 0;
+            }
+ 
+            .table tr.alter {
+                background-color: #f5fafe;
+            }
+
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">
+				<span id="title"></span>天气
+			</h1>
+		</header>
+		<div class="mui-content">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<span id='city'></span>
+				</li>
+				<li class="mui-table-view-cell">
+					天气：<span id='weather'></span>
+				</li>
+				<li class="mui-table-view-cell">
+					温度：<span id='temperature'></span>
+				</li>
+				<li class="mui-table-view-cell">
+					湿度：<span id='humidity'></span>
+				</li>
+				<li class="mui-table-view-cell">
+					风向：<span id='direct'></span>
+				</li>
+				<li class="mui-table-view-cell">
+					风力：<span id='power'></span>
+				</li>
+			</ul>
+			<h4 id="title2">未来四天的天气情况</h4>
+			<table width="100%" class="table" id="tablevalue">
+				<thead>
+					<th width=20%>日期</th>
+					<th width=20%>天气和温度</th>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+		<nav class="mui-bar mui-bar-tab">
+			<a class="mui-tab-item mui-active">
+				<span class="mui-icon mui-icon-home"></span>
+				<span class="mui-tab-label">首页</span>
+			</a>
+			<a class="mui-tab-item">
+				<span class="mui-icon mui-icon-phone"></span>
+				<span class="mui-tab-label">电话</span>
+			</a>
+			<a class="mui-tab-item">
+				<span class="mui-icon mui-icon-email"></span>
+				<span class="mui-tab-label">邮件</span>
+			</a>
+			<a class="mui-tab-item">
+				<span class="mui-icon mui-icon-gear"></span>
+				<span class="mui-tab-label">设置</span>
+			</a>
+		</nav>
+	</body>
+</html>
